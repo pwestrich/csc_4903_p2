@@ -5,7 +5,8 @@ public class Wander : MonoBehaviour {
 	
 	public float wanderRadius;
 	public float wanderTimer;
-	
+	public GameObject targetPlayer;
+
 	private Transform target;
 	private NavMeshAgent agent;
 	private float timer;
@@ -14,6 +15,7 @@ public class Wander : MonoBehaviour {
 	void OnEnable () {
 		agent = GetComponent<NavMeshAgent> ();
 		timer = wanderTimer;
+		//agent.SetDestination (targetPlayer.transform.position);
 	}
 	
 	// Update is called once per frame
@@ -21,8 +23,8 @@ public class Wander : MonoBehaviour {
 		timer += Time.deltaTime;
 		
 		if (timer >= wanderTimer) {
-			Vector3 newPos = RandomNavSphere(transform.position, wanderRadius, -1);
-			agent.SetDestination(newPos);
+			//Vector3 newPos = RandomNavSphere(transform.position, wanderRadius, -1);
+			agent.SetDestination(targetPlayer.transform.position);
 			timer = 0;
 		}
 	}
