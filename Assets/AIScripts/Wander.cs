@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Wander : MonoBehaviour {
-	
+public class Wander : MonoBehaviour
+{
+
+	public float awareDistance;
 	public float wanderRadius;
 	public float wanderTimer;
 	public GameObject targetPlayer;
@@ -12,24 +14,40 @@ public class Wander : MonoBehaviour {
 	private float timer;
 	
 	// Use this for initialization
-	void OnEnable () {
+	void OnEnable ()
+	{
 		agent = GetComponent<NavMeshAgent> ();
 		timer = wanderTimer;
 		//agent.SetDestination (targetPlayer.transform.position);
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
 		timer += Time.deltaTime;
 		
 		if (timer >= wanderTimer) {
-			//Vector3 newPos = RandomNavSphere(transform.position, wanderRadius, -1);
-			agent.SetDestination(targetPlayer.transform.position);
+
+			Vector3 distance = transform.position - targetPlayer.transform.position;
+			Vector3 newPos;
+
+			if (distance.magnitude <= awareDistance) {
+				
+				newPos = targetPlayer.transform.position;
+				
+			} else {
+
+				newPos = RandomNavSphere (transform.position, wanderRadius, -1);
+
+			}
+
+			agent.SetDestination (newPos);
 			timer = 0;
 		}
 	}
 	
-	public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask) {
+	public static Vector3 RandomNavSphere (Vector3 origin, float dist, int layermask)
+	{
 		Vector3 randDirection = Random.insideUnitSphere * dist;
 		
 		randDirection += origin;
