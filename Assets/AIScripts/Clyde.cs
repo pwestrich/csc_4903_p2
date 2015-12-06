@@ -1,61 +1,60 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Clyde : MonoBehaviour
-{
-
-	public float awareDistance;
-	public float wanderRadius;
-	public float wanderTimer;
-	public GameObject targetPlayer;
-
-	private Transform target;
+// 50/50 to hunt player for X time or go to random dest (currently power pellets)
+public class Clyde : MonoBehaviour {
+	
+	public GameObject[] destinations;
+	private int currentDestination;
+	
 	private NavMeshAgent agent;
-	private float timer;
+
+	public GameObject targetPlayer;
+	public float huntingTime;
+	private bool hunting;
+	private float huntTimer;
 	
 	// Use this for initialization
-	void OnEnable ()
-	{
+	void OnEnable () {
 		agent = GetComponent<NavMeshAgent> ();
-		timer = wanderTimer;
-		//agent.SetDestination (targetPlayer.transform.position);
-	}
-	
-	// Update is called once per frame
-	void Update ()
-	{
-		timer += Time.deltaTime;
-		
-		if (timer >= wanderTimer) {
-
-			Vector3 distance = transform.position - targetPlayer.transform.position;
-			Vector3 newPos;
-
-			if (distance.magnitude <= awareDistance) {
-				
-				newPos = targetPlayer.transform.position;
-				
-			} else {
-
-				newPos = RandomNavSphere (transform.position, wanderRadius, -1);
-
-			}
-
-			agent.SetDestination (newPos);
-			timer = 0;
+		hunting = false;
+		huntTimer = 0;
+		if (Random.value < 0.5f) {
+			currentDestination = Random.Range (0, destinations.Length - 1);
+			agent.SetDestination (destinations [currentDestination].transform.position);
+		} else {
+			hunting = true;
+			agent.SetDestination (targetPlayer.transform.position);
+			currentDestination = Random.Range (0, destinations.Length - 1);
 		}
 	}
 	
-	public static Vector3 RandomNavSphere (Vector3 origin, float dist, int layermask)
-	{
-		Vector3 randDirection = Random.insideUnitSphere * dist;
-		
-		randDirection += origin;
-		
-		NavMeshHit navHit;
-		
-		NavMesh.SamplePosition (randDirection, out navHit, dist, layermask);
-		
-		return navHit.position;
+	// Update is called once per frame
+	void Update () {
+
+		float distanceFromDestination = Vector3.Distance(transform.position,destinations[currentDestination].transform.position);
+
+		if (huntTimer > huntingTime) {
+			hunting = false;
+		}
+
+		if (hunting) {
+			hunting = true;
+			huntTimer += Time.deltaTime;
+			agent.SetDestination (targetPlayer.transform.position);
+		} else if (distanceFromDestination <= 50) {
+			if (Random.value < 0.5f) {
+				currentDestination = Random.Range (0, destinations.Length - 1);
+				agent.SetDestination (destinations [currentDestination].transform.position);
+			} else {
+				hunting = true;
+				agent.SetDestination (targetPlayer.transform.position);
+				currentDestination = Random.Range (0, destinations.Length - 1);
+			}
+		} else {
+			hunting = false;
+			agent.SetDestination (destinations [currentDestination].transform.position);
+		}
 	}
+	
 }

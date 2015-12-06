@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
+// Wanders, hunts player if near
 public class Blinky : MonoBehaviour
 {
 	
@@ -31,7 +32,7 @@ public class Blinky : MonoBehaviour
 			hunting = true;
 			newPos = targetPlayer.transform.position;
 			agent.SetDestination (newPos);
-		} else if (distanceFromDestination.magnitude <= 80 || hunting) {
+		} else if (distanceFromDestination.magnitude <= 50 || hunting) {
 			hunting = false;
 			newPos = RandomNavSphere (transform.position, wanderRadius, -1);
 			currentDestination = newPos;
