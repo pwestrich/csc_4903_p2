@@ -1,14 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PinkyRoute : MonoBehaviour {
+public class Pinky : MonoBehaviour {
 
 
 	public GameObject[] destinations;
 	private int currentDestination;
 
 	private NavMeshAgent agent;
-	private float timer;
 	
 	// Use this for initialization
 	void OnEnable () {

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Wander : MonoBehaviour
+public class Clyde : MonoBehaviour
 {
 
 	public float awareDistance;

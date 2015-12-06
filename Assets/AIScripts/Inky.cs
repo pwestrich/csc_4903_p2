@@ -3,41 +3,27 @@ using System.Collections;
 
 public class Inky : MonoBehaviour {
 	
-	public float wanderRadius;
-	public float wanderTimer;
-	public GameObject targetPlayer;
+	public GameObject[] destinations;
+	private int currentDestination;
 	
 	private Transform target;
 	private NavMeshAgent agent;
-	private float timer;
 	
 	// Use this for initialization
 	void OnEnable () {
 		agent = GetComponent<NavMeshAgent> ();
-		timer = wanderTimer;
-		//agent.SetDestination (targetPlayer.transform.position);
+		currentDestination = Random.Range (0, 3);
+		agent.SetDestination (destinations[currentDestination].transform.position);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		timer += Time.deltaTime;
-		
-		if (timer >= wanderTimer) {
-			Vector3 newPos = RandomNavSphere(transform.position, wanderRadius, -1);
-			agent.SetDestination(newPos);
-			timer = 0;
+		var distance = Vector3.Distance(transform.position,destinations[currentDestination].transform.position);
+		if (distance <= 50) 
+		{
+			currentDestination = Random.Range (0, 3);
+			agent.SetDestination (destinations[currentDestination].transform.position);
 		}
 	}
-	
-	public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask) {
-		Vector3 randDirection = Random.insideUnitSphere * dist;
-		
-		randDirection += origin;
-		
-		NavMeshHit navHit;
-		
-		NavMesh.SamplePosition (randDirection, out navHit, dist, layermask);
-		
-		return navHit.position;
-	}
+
 }
